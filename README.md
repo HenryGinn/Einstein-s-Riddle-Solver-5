@@ -11,6 +11,7 @@
 1. [Family Relations](#family-relations)
 1. [Murder Mystery Variation](#murder-mystery-variation)
 1. [Well Posedness and Finding Multiple Solutions](#well-posedness-and-finding-multiple-solutions)
+1. [Program Structure and Implementation](#program-structure-and-implementation)
 
 ---
 
@@ -59,6 +60,8 @@ The goal of the riddle is to determine who owns the fish. The class of problems 
 - Supplementary variable: these are used to help formulate constraints, but their value is not important in the solution. An example would the variables used in big M constraints.
 - Big M constraints: variables used to enforce a choice of constraints. For more information see the section [Types of Clues and Their Constraints](#types-of-clue-and-their-constraints)
 - Feasible region: the set of points that are satisfied by all the constraints. As our constraints are linear this will be a polytope, and in our case will also be bounded.
+- Positive constraint: something is enforced to match
+- Negative constraint: something is enforced to not match.
 
 ---
 
@@ -130,11 +133,11 @@ In this section we will cover the following types of clue:
 
 ### 1: Non-Matching of Properties
 
-This is the simplest type of clue, and an example of this would be "The Brit does not live in the blue house". We can enforce this immediately by imposing the constraint $x_{\text{Brit, blue}} \le 0$.
+This is the simplest type of clue, and an example of this would be "The Brit does not live in the blue house". We can enforce this immediately by imposing the constraint $x_{\text{Brit, blue}} \le 0$. We will refer to this as a negative constraint because we are saying something is now allowed.
 
 ### 2: Matching of Properties
 
-This type of constraint is also very simple and most of the constraints in Einstein's riddle take this form. An example would be "The Brit lives in the red house". As we need the origin to be a feasible point, we cannot simply impose the constraint that $x_{\text{Brit, red}} \ge 1$, but we can take advantage of the rook constraints and the fact that in the optimal solution, all rook problems will be at capacity in order to encode this information. We insist that all other variables in the Brit row/column of the nationality and house colour rook problem sum to at most 0. Equivalently we could also use the constraint that all other variables in the red column/row of nationality and house colour rook problem sum to at most 0. Yet another alternative will be to insist that the other variables in both the rows and the columns sum to at most 0. All of these describe a different feasible region, but the set of optimal points consistent with the rook and consistency constraints will be the same.
+This type of constraint is also very simple and most of the constraints in Einstein's riddle take this form. An example would be "The Brit lives in the red house". As we need the origin to be a feasible point, we cannot simply impose the constraint that $x_{\text{Brit, red}} \ge 1$, but we can take advantage of the rook constraints and the fact that in the optimal solution, all rook problems will be at capacity in order to encode this information. We insist that all other variables in the Brit row/column of the nationality and house colour rook problem sum to at most 0. Equivalently we could also use the constraint that all other variables in the red column/row of nationality and house colour rook problem sum to at most 0. Yet another alternative will be to insist that the other variables in both the rows and the columns sum to at most 0. All of these describe a different feasible region, but the set of optimal points consistent with the rook and consistency constraints will be the same. We refer to this as a positive constraint because we are enforcing that a variable is non-zero.
 
 ### 3: Choice of Multiple Clues
 
@@ -173,7 +176,11 @@ As we are exploring all possible families relative to the reference property, we
 
 We will refer to the reference property as R, and X and Y for general properties, not necessarily different to the reference property. Our method will be to use big M constraints to cover all possible cases of how the elements with properties X and Y are related to the element with property R. Suppose we are given the clue that the daughter of the element with property X has property Y. A possible situation is that the element with property X is the brother of the element with property R, and in this case the daughter of the element with property X would be the daughter of the brother of the element with property R, making them the niece of the element with property R. Note how we only ever need to consider the rook problem with X and Y, and we do not need to look at the rook problems with X and R or Y and R. Phrasing the above without explicit reference to R, we get "If X is the brother, then the niece has Y".
 
-We do not increase the number of dimensions of the problem by doing this as we the big M variables already exist. In the above the relevant indicator variable would have been ${x_{\text{X, brother}}}$
+We do not increase the number of dimensions of the problem by doing this as the big M variables already exist. In the above example the relevant indicator variable is ${x_{\text{X, brother}}}$, and the constraint that the indicators sum to 1 is given naturally by the existing rook constraints so we do not need any additional constraints to enforce consistency of the indicator variables. We also note that clues such as "The Brit has no siblings" can be encoded by saying that the German is not the Brit's brother, the German is not the Brit's sister, and so on for the other nationalities. This only needs to be done for one set of characteristics, and the others are implied by consistency. The constraints are in the same form as before, but with the big M constraints included (see subsection [choice of multiple clues](#3-choice-of-multiple-clues) for more details). Here we give the negative and positive version of the constraint described in the preceding paragraph. Due to the rook constraints we can use ${M_1 = 3 = M_2}$ for our big M constants.
+
+$$x_{\text{niece, Y}} \le 0 + M_1\sum_{\text{relation} \ne \text{brother}} x_{\text{relation, X}}$$
+
+$$\sum_{\text{relation} \ne \text{niece}} x_{\text{relation, Y}} + \sum_{\text{Z} \ne \text{Y}} x_{\text{Z, Y}} \le 0 + M_2\sum_{\text{relation} \ne \text{brother}} x_{\text{relation, X}}$$
 
 ---
 
@@ -205,6 +212,8 @@ If the Brit does not drink milk then ${x_{\text{Brit, milk}} = 0}$ and the other
 
 ## Well Posedness and Finding Multiple Solutions
 
-If a problem has a solution then it will be in the feasible region. We also know that due to the rook constraints that the total of all the variables in the grid will be ${\frac{1}{2} nm(m-1)}$, and because we are maximising $x^Tx$, the profit function can only achieve ${\frac{1}{2} nm(m-1)}$ if all variables are 0 or 1. If an optimal point is found with the maximal profit we know that it will be a valid solution as if any variables are not 0 or 1 then the profit would be able to be increased past the upper bound for the profit. This follows from the arguments made in the section [Choice of Profit Function](#choice-of-profit-function). A solution exists if and only if the maximum profit is ${\frac{1}{2} nm(m-1)}$, and if a feasible point has maximal profit then it is a valid solution.
+If a problem has a solution then it will be in the feasible region. We also know that due to the rook constraints that the total of all the variables in the grid can be easily found as some value, $N$, and because we are maximising $x^Tx$ with each ${x_i \le 1}$, the profit function can only achieve $N$ if all variables are 0 or 1. If an optimal point is found with the maximal profit we know that it will be a valid solution as if any variables are not 0 or 1 then the profit would be able to be increased past the upper bound for the profit. This follows from the arguments made in the section [Choice of Profit Function](#choice-of-profit-function). A solution exists if and only if the maximum profit is $N$, and if a feasible point has maximal profit then it is a valid solution.
 
-Finding multiple solutions can be achieved through an iterative process. An optimal point is found and some grid variables will be 0 and some will be 1. We will search for different solutions by adding a constraint to remove this point from the feasible region and attempting to optimise the problem again. We can do this by choosing a constraint that adds up all the variables that are equal to 1 and insisting that the sum is bounded by ${\frac{1}{2} nm(m-1) - 1}$. As the sum of variables equal to 1 in this solution add to ${\frac{1}{2} nm(m-1)}$, the point that has just been found would not be feasible with this new constraint. We also note that we do not remove any other solutions with this constraint as the only way a solution can lie beyond this constraint hyperplane is if it is identically equal to the old solution. This follows from the rook constraints.
+Finding multiple solutions can be achieved through an iterative process. An optimal point is found and some grid variables will be 0 and some will be 1. We will search for other solutions by adding a constraint to remove this point from the feasible region and attempting to optimise the problem again. We can do this by choosing a constraint that adds up all the grid variables that are equal to 1 and insisting that this sum is bounded by ${N - 1}$. As the sum of variables equal to 1 in this solution add to $N$, the point that has just been found would not be feasible with this new constraint. We also note that we do not remove any other solutions with this constraint as the only way a solution can lie beyond this constraint hyperplane is if it is identically equal to the old solution. This follows from the rook constraints.
+
+## Program Structure and Implementation
