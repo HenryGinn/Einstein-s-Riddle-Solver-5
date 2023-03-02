@@ -216,4 +216,18 @@ If a problem has a solution then it will be in the feasible region. We also know
 
 Finding multiple solutions can be achieved through an iterative process. An optimal point is found and some grid variables will be 0 and some will be 1. We will search for other solutions by adding a constraint to remove this point from the feasible region and attempting to optimise the problem again. We can do this by choosing a constraint that adds up all the grid variables that are equal to 1 and insisting that this sum is bounded by ${N - 1}$. As the sum of variables equal to 1 in this solution add to $N$, the point that has just been found would not be feasible with this new constraint. We also note that we do not remove any other solutions with this constraint as the only way a solution can lie beyond this constraint hyperplane is if it is identically equal to the old solution. This follows from the rook constraints.
 
+---
+
 ## Program Structure and Implementation
+
+Characteristic types:
+- Standard: these are qualitative characteristics such as nationality, drink preference, and pet. Most characteristics in a problem will be of this type.
+- Quantitative: this is something like age or height, and has more ways of interacting with than standard characteristics.
+- Family: this is a special characteristic where the elements are related to each other in a family tree like structure.
+- Murder: these are "No Alibi", "Weapon", and "Motive", and are used in the murder mystery variation of the problem.
+
+Each rook problem has two characteristics associated with it. Again we split into groups based on how the characteristic types interact with each other. For example information about how two different standard characteristics is handled differently than how a pair of standard and quantitative characteristics is handled. We will only ever have one family characteristic so will not need a class for two family characteristics interacting with each other, although a family class without a pair can handle clues such as "There is only one only child", although we do not currently consider such clues. Each of "No Alibi", "Weapon", and "Motive" should be objects of a murder characteristic class, and interactions between them should be handled by a class that deals with murder characteristics at a higher level of scope. This will perform a similar role to a rook problem class that handles all the other rook problems.
+
+Consistency constraints handle three different characteristics, and we split the ways that consistency constraints for the different triples of characteristic are handled into groups. All consistency constraints involving murder characteristics can be handled the same, and all consistency constraints not involving murder characteristics can be handled the same. We have a class for consistency constraints involving murder characteristics, and a class for consistency constraints involving non murder characteristics. An instance of the non-murder characteristics consistency class will have three rook problem objects associated with it corresponding to three different characteristics, and an instance of the murder characteristics consistency class will have 2 rook problem objects and a murder object associated with it.
+
+Getting input on the structure of the program will be handled by an problem structure class, and this will also save the results to files, and read it again when needed. We will have a similar class for clue data. Displaying the problem output to the problem will also need it's own class. These peripheral classes and the main classes mentioned in the preceding paragraphs will be managed to by an overarching class which will be controlled by an interface script.

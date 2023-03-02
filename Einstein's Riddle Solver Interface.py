@@ -1,0 +1,1 @@
+from EinsteinRiddle import EinsteinRiddle
