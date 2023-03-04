@@ -230,4 +230,21 @@ Each rook problem has two characteristics associated with it. Again we split int
 
 Consistency constraints handle three different characteristics, and we split the ways that consistency constraints for the different triples of characteristic are handled into groups. All consistency constraints involving murder characteristics can be handled the same, and all consistency constraints not involving murder characteristics can be handled the same. We have a class for consistency constraints involving murder characteristics, and a class for consistency constraints involving non murder characteristics. An instance of the non-murder characteristics consistency class will have three rook problem objects associated with it corresponding to three different characteristics, and an instance of the murder characteristics consistency class will have 2 rook problem objects and a murder object associated with it.
 
-Getting input on the structure of the program will be handled by an problem structure class, and this will also save the results to files, and read it again when needed. We will have a similar class for clue data. Displaying the problem output to the problem will also need it's own class. These peripheral classes and the main classes mentioned in the preceding paragraphs will be managed to by an overarching class which will be controlled by an interface script.
+Getting input on the structure of the program will be handled by a problem structure class, and this will also save the results to files, and read it again when needed. We will have a similar class for clue data. Displaying the problem output to the problem will also need it's own class. These peripheral classes and the main classes mentioned in the preceding paragraphs will be managed to by an overarching class which will be controlled by an interface script.
+
+## Family Construction
+
+We will describe people's position in the family tree as a list of directions of how to get there from the reference element. The possible directions that can be taken are "Son", "Daughter", "Mother", "Father", "Brother", "Sister", "Wife", and "Husband". We use recursion to generate all possible relations, and then filter out bad relations. For example we are only allowing unique entities at each level, so two brothers are both described as male siblings, but a brother and a sister have different characterisations. After that, any constraints placed on the family are applied, such as number of generations. We list the unnecessary and restricted situations below
+
+- "Brother", "Brother"
+- "Sister", "Sister"
+- "Brother", "Sister"
+- "Sister", "Brother"
+- "Male", "Parent", "Son"
+- "Female", "Parent", "Daughter"
+- "Male", "Child", "Father"
+- "Female", "Child", "Mother"
+- "Male", "Husband"
+- "Female", "Wife"
+- "Husband", "Wife"
+- "Wife", "Husband"
