@@ -1,6 +1,7 @@
 from UserFacing.Characteristic import Characteristic
 from Utils import get_int_input
 from Utils import get_consecutive_list
+from RelationNaming import name_relation
 
 class FamilyCharacteristic(Characteristic):
 
@@ -20,16 +21,19 @@ class FamilyCharacteristic(Characteristic):
         self.set_family_tree_information()
         self.generate_family()
         self.filter_family()
+        self.create_relation_names()
+        input()
 
     def set_family_tree_information(self):
         self.set_in_laws()
         self.set_generations()
         self.set_spouses()
+        self.set_same_sex()
 
     def set_in_laws(self):
         prompt = ("Are there any in-law relations?\n"
                   "1: No\n"
-                  "2: Yes\n")
+                  "2: Maybe\n")
         in_laws_user_input = get_int_input(prompt, 1, 2)
         self.in_laws = {1: False, 2: True}[in_laws_user_input]
 
@@ -60,9 +64,16 @@ class FamilyCharacteristic(Characteristic):
     def set_spouses(self):
         prompt = ("Are any spouses present in the family?\n"
                   "1: No\n"
-                  "2: Yes\n")
+                  "2: Maybe\n")
         spouses_user_input = get_int_input(prompt, 1, 2)
         self.spouses = {1: False, 2: True}[spouses_user_input]
+
+    def set_same_sex(self):
+        prompt = ("Are any same-sex relations present in the family?\n"
+                  "1: No\n"
+                  "2: Maybe\n")
+        same_sex_user_input = get_int_input(prompt, 1, 2)
+        self.same_sex = {1: False, 2: True}[same_sex_user_input]
 
     def generate_family(self):
         self.relations = []
@@ -84,9 +95,6 @@ class FamilyCharacteristic(Characteristic):
     def filter_family(self):
         self.relations = [relation for relation in self.relations
                           if self.is_valid_relation(relation)]
-        for relation in self.relations:
-            print(relation)
-        input()
 
     def is_valid_relation(self, relation):
         check_functions = self.get_check_relations_functions()
@@ -96,7 +104,7 @@ class FamilyCharacteristic(Characteristic):
     def get_check_relations_functions(self):
         check_functions = [self.check_pairs,
                            self.check_generations, self.check_in_laws,
-                           self.check_no_spouses]
+                           self.check_no_spouses, self.check_same_sex]
         return check_functions
 
     def check_relation_valid(self, relation, check_functions):
@@ -120,7 +128,6 @@ class FamilyCharacteristic(Characteristic):
 
     def get_check_pair_functions(self):
         check_functions = [self.no_sibling_pairs, self.no_spouse_pairs,
-                           self.no_male_husbands, self.no_female_wives,
                            self.no_parent_childs, self.no_child_parents,
                            self.no_parent_spouse, self.no_child_sibling,
                            self.no_sibling_parents, self.no_spouse_child]
@@ -131,12 +138,6 @@ class FamilyCharacteristic(Characteristic):
 
     def no_spouse_pairs(self, pair):
         return (self.is_spouse(pair[0]) and self.is_spouse(pair[1]))
-
-    def no_male_husbands(self, pair):
-        return (self.is_male(pair[0]) and pair[1] == "Husband")
-
-    def no_female_wives(self, pair):
-        return (self.is_female(pair[0]) and pair[1] == "Wife")
 
     def no_parent_childs(self, pair):
         return (self.is_child(pair[0]) and self.is_parent(pair[1]))
@@ -197,6 +198,24 @@ class FamilyCharacteristic(Characteristic):
             return ("Husband" in relation or "Wife" in relation)
         else:
             return False
+
+    def check_same_sex(self, relation):
+        if self.same_sex is False:
+            return self.no_same_sex(relation)
+        else:
+            return False
+
+    def no_same_sex(self, relation):
+        for pair in get_consecutive_list(relation, 2):
+            if self.no_male_husbands(pair) or self.no_female_wives(pair):
+                return True
+        return False
+
+    def no_male_husbands(self, pair):
+        return (self.is_male(pair[0]) and pair[1] == "Husband")
+
+    def no_female_wives(self, pair):
+        return (self.is_female(pair[0]) and pair[1] == "Wife")
     
 
     def is_male(self, direct_relation):
@@ -217,4 +236,5 @@ class FamilyCharacteristic(Characteristic):
     def is_spouse(self, direct_relation):
         return (direct_relation in ["Husband", "Wife"])
 
-    
+    def create_relation_names(self):
+        self.relations = [name_relation(relation) for relation in self.relations]

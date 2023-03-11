@@ -12,6 +12,7 @@
 1. [Murder Mystery Variation](#murder-mystery-variation)
 1. [Well Posedness and Finding Multiple Solutions](#well-posedness-and-finding-multiple-solutions)
 1. [Program Structure and Implementation](#program-structure-and-implementation)
+1. [Family Tree Construction](#family-tree-construction)
 
 ---
 
@@ -232,19 +233,39 @@ Consistency constraints handle three different characteristics, and we split the
 
 Getting input on the structure of the program will be handled by a problem structure class, and this will also save the results to files, and read it again when needed. We will have a similar class for clue data. Displaying the problem output to the problem will also need it's own class. These peripheral classes and the main classes mentioned in the preceding paragraphs will be managed to by an overarching class which will be controlled by an interface script.
 
-## Family Construction
+## Family Tree Construction
 
-We will describe people's position in the family tree as a list of directions of how to get there from the reference element. The possible directions that can be taken are "Son", "Daughter", "Mother", "Father", "Brother", "Sister", "Wife", and "Husband". We use recursion to generate all possible relations, and then filter out bad relations. For example we are only allowing unique entities at each level, so two brothers are both described as male siblings, but a brother and a sister have different characterisations. After that, any constraints placed on the family are applied, such as number of generations. We list the unnecessary and restricted situations below
+### Validity Constraints
 
-- "Brother", "Brother"
-- "Sister", "Sister"
-- "Brother", "Sister"
-- "Sister", "Brother"
-- "Male", "Parent", "Son"
-- "Female", "Parent", "Daughter"
-- "Male", "Child", "Father"
-- "Female", "Child", "Mother"
-- "Male", "Husband"
-- "Female", "Wife"
-- "Husband", "Wife"
-- "Wife", "Husband"
+We will describe people's position in the family tree as a list of directions of how to get there from the reference element. The possible directions that can be taken are "Son", "Daughter", "Mother", "Father", "Brother", "Sister", "Wife", and "Husband", so for example, mother-in-law would be "Wife, Mother" or "Husband, Mother". We use recursion to generate all possible relations, and then filter out bad relations. We are only allowing unique entities at each level, for example, two brothers are both described as male siblings, but a brother and a sister are distinguishable by their gender, so they are valid. When we generate the relations, there is only one option for "Brother", so it is impossible for someone to have relations "Brother 1" and "Brother 2", and similarly for other relations. There are some relations generated that would not be valid however, and we list them below.
+
+- Spouse-spouse. We are assuming monogamous relationships as we need indistinguisable entities at each level. The husband of a husband, the wife of a wife, the wife of a husband or the husband of a wife of someone would be themselves in a two person relationship, so we can remove these relations. These situations are characterised by any relations that have two spousal relations next to each other.
+- Sibling-sibling. "Brother, Brother" and "Sister, Sister" can either describe a situation where there are two siblings or more than two siblings. In the case of two siblings, the relations cancel out, and in the case of more than two siblings, the two siblings of the same gender would be indistinguishable. In either case it is either unnecessay or invalid so we remove them. A similar analysis shows "Brother, Sister" and "Sister, Brother" are also unnecessary or invalid.
+- Parent-child and child-parent. The first relation either refers to a sibling, step-sibling or cancels out, so in either case it can be ruled out. The second relation either refers to a spouse, step-spouse, or cancels out so can also be ruled out.
+- Parent-spouse, child-sibling, sibling-parents, and spouse-child. Each of these reduce down to parent, child, parents, and child respectively. In the first two the first relation is an unnecessary detour, and in the last two the second relation is an unnecessary detour.
+
+### Structure Constraints
+
+Further constraints can be placed on the structure of the family to reduce the number of relations, such as number of generations. At this stage the way we have generated the list of all relations mean that for any validly-shaped family tree, the relations of the other elements from any element will be in the tree. This means that any element could be the reference element. By applying further constraints on the family tree the symmetry of who can be the reference element is broken, so these constraints need to be chosen carefully by the user. For example if we only consider older generations, the reference element would have to be in the youngest generation. Not all structure constraints can be applied at this stage however. For example we cannot enforce the constraint that all children have no siblings. We need to include the possibility of the children being male or female, We list all such optional constraints currently implemented below.
+
+- No step family. This describes the situation where "Husband" or "Wife" can only come at the end of a relation, and means the reference element will have no step relations. Only blood relations are allowed, apart from people's spouses.
+- No spouses allowed. This is an even more restricted version of the above constraint. All people will be related by blood to the reference element.
+- No same-sex relations. This is not actually automatically invalid by the rule that we cannot have any indistinguishible elements, as long as the only route to the spouse is as a spouse. By this we mean that you cannot have "Child, Father, Husband", as "Father" would be ambiguous. Any such cases like this are handled by the parent-spouse restriction above. This can be imposed to simplify problems however and reduce the number of relations if that is necessary.
+
+We note that the choice of reference element can change the shape of the family. For example if the reference element is male and has two siblings of different gender, it would be impossible to change the reference element to the sister, as they would have two indistinguishable male siblings. We cobjecture that this will not be an issue however as we generate all possible relations from the reference element, and this will give the formulation enough freedom to work around any such problems.
+
+### Names of Relations
+
+The current description of a relation is unique, but it can be long and not human-friendly, so we would like to come up with a better label for each relation. If we try and preserve all the information then we will have a naming system just as verbose as we currently do, for example "Mother, Mother, Mother, Mother" could translate as "Maternal grandmother's maternal grandmother". "Maternal/Paternal" also become less useful as you go down branches. Piblings and spouses of n-parents can be described uniquelly, for example "Mother, Brother" translates as "Maternal uncle", but we already run into trouble when describing counsins. Niblings have gendered labels so can be specified, but the gender of the cousin would also need to be specified to uniquelly describe the nibling. To get around such awkwardness we ignore the gender of the people taken on the route to each relation when assigning a name. We do this except for the last relation when they are closely related (apart from cousin where there is no gendered word), so we still use words such as "Great-Uncle" and "Nephew". We will follow the usual naming system for position in a family tree. This is done by describing how many generations you go to get to a common ancestor, and how many you go down in the following way.
+
+- Up 1 generation: parents
+- Up $n$ generations, $n \ge 2$: $(n-2)$ great-grandparents
+- Up 1 generations, down 2: nibling
+- Up 2 generations, down 1: pibling
+- Up 1 generations, down $n$, $n \ge 3$: $(n-3)$ great-grandnibling
+- Up $n$ generations, down 1, $n \ge 3$: $(n-3)$ great-grandpibling
+- Up $n$ generations, down $n$ generations: $n^{\text{th}}$ cousin
+- Up $n$ generations, down $m$ generations, $n > m \ge 2$: $m^{\text{th}}$ cousin, $n-m$ times removed
+- Up $n$ generations, down $m$ generations, $2 \le n < m$: $n^{\text{th}}$ cousin, $m-n$ times removed
+
+If a relation ends with "Husband" or "Wife", then we will give that the same name as if the relation did not end with "Husband" or "Wife", but add "-in-law" on the end, and change the gender to match if it is relevant. If a relation has a spousal term in the middle then we truncate the relation after the spousal term and treat that as it's own relation. We then add the relevant ownership grammar and add the label of the rest of the relation. For example, "Mother, Sister, Husband, Brother" would be labelled as "Uncle-in-law's Brother".
