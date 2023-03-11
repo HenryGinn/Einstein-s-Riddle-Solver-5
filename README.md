@@ -233,6 +233,8 @@ Consistency constraints handle three different characteristics, and we split the
 
 Getting input on the structure of the program will be handled by a problem structure class, and this will also save the results to files, and read it again when needed. We will have a similar class for clue data. Displaying the problem output to the problem will also need it's own class. These peripheral classes and the main classes mentioned in the preceding paragraphs will be managed to by an overarching class which will be controlled by an interface script.
 
+---
+
 ## Family Tree Construction
 
 ### Validity Constraints
@@ -269,3 +271,5 @@ The current description of a relation is unique, but it can be long and not huma
 - Up $n$ generations, down $m$ generations, $2 \le n < m$: $n^{\text{th}}$ cousin, $m-n$ times removed
 
 If a relation ends with "Husband" or "Wife", then we will give that the same name as if the relation did not end with "Husband" or "Wife", but add "-in-law" on the end, and change the gender to match if it is relevant. If a relation has a spousal term in the middle then we truncate the relation after the spousal term and treat that as it's own relation. We then add the relevant ownership grammar and add the label of the rest of the relation. For example, "Mother, Sister, Husband, Brother" would be labelled as "Uncle-in-law's Brother".
+
+This motivates the following implementation. We first split a relation into components which we will refer to as "in-law components". The relations will be split whenever a spouse is given, so each component will only contain blood relations. These components will be given a name according to the blood relation naming system described above, and then stitched together with the other in-law components. To give each component a name we only need to consider how many generations up and then down it has gone. This is well-defined due to how we described the relations, as any if a relation were to go down a generation and then back up again, this would be described by the spouse or sibling of a previously considered generation. Implicit in any sibling relation is going up and down one generation, and we note this is a non-trivial change to the number of generations. For each in-law component, we are actually going to describe the spouse, so we can change the gender of the person before to match that of their spouse, and this will handle any gende issues when describing the in-law.

@@ -1,7 +1,7 @@
 from UserFacing.Characteristic import Characteristic
 from Utils import get_int_input
 from Utils import get_consecutive_list
-from RelationNaming import name_relation
+from UserFacing.RelationNaming import name_relation
 
 class FamilyCharacteristic(Characteristic):
 
@@ -34,7 +34,7 @@ class FamilyCharacteristic(Characteristic):
         prompt = ("Are there any in-law relations?\n"
                   "1: No\n"
                   "2: Maybe\n")
-        in_laws_user_input = get_int_input(prompt, 1, 2)
+        in_laws_user_input = 2#get_int_input(prompt, 1, 2)
         self.in_laws = {1: False, 2: True}[in_laws_user_input]
 
     def set_generations(self):
@@ -44,7 +44,7 @@ class FamilyCharacteristic(Characteristic):
     def set_generations_young(self):
         prompt = ("How many generations are below some element?\n"
                   "If you do not know, enter -1\n")
-        self.generations_young = get_int_input(prompt, -1, self.problem.element_count - 1)
+        self.generations_young = -1#get_int_input(prompt, -1, self.problem.element_count - 1)
         self.process_generations_young()
 
     def process_generations_young(self):
@@ -54,7 +54,7 @@ class FamilyCharacteristic(Characteristic):
     def set_generations_old(self):
         prompt = ("How many generations are below that same element?\n"
                   "If you do not know, enter -1\n")
-        self.generations_old = get_int_input(prompt, -1, self.problem.element_count - 1)
+        self.generations_old = -1#get_int_input(prompt, -1, self.problem.element_count - 1)
         self.process_generations_old()
 
     def process_generations_old(self):
@@ -65,14 +65,14 @@ class FamilyCharacteristic(Characteristic):
         prompt = ("Are any spouses present in the family?\n"
                   "1: No\n"
                   "2: Maybe\n")
-        spouses_user_input = get_int_input(prompt, 1, 2)
+        spouses_user_input = 2#get_int_input(prompt, 1, 2)
         self.spouses = {1: False, 2: True}[spouses_user_input]
 
     def set_same_sex(self):
         prompt = ("Are any same-sex relations present in the family?\n"
                   "1: No\n"
                   "2: Maybe\n")
-        same_sex_user_input = get_int_input(prompt, 1, 2)
+        same_sex_user_input = 1#get_int_input(prompt, 1, 2)
         self.same_sex = {1: False, 2: True}[same_sex_user_input]
 
     def generate_family(self):
