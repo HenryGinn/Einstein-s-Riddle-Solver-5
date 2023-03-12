@@ -1,89 +1,19 @@
-def name_relation(relation):
-    if is_spouse(relation):
-        name = relation[0]
-    else:
-        name = get_non_spouse_name(relation)
-    print(f"{relation}: {name}")
-    return name
-
-def is_spouse(relation):
-    return (relation in [["Husband"], ["Wife"]])
-
-def get_non_spouse_name(relation):
-    if is_direct_in_law(relation):
-        base_name = get_non_direct_in_law_name(relation[1:])
-        name = f"{base_name}-in-law"
-    else:
-        name = get_non_direct_in_law_name(relation)
-    return name
-
-def is_direct_in_law(relation):
-    return is_spouse(relation[:1])
-
-def get_non_direct_in_law_name(relation):
-    spouse_indexes = get_spouse_indexes(relation)
-    in_law_components = get_in_law_components(relation, spouse_indexes)
-    spouses = [relation[index] for index in spouse_indexes]
-    end_genders = get_end_genders(relation, spouses)
-    component_names = get_component_names(in_law_components, end_genders)
-    name = "-in-law's ".join(component_names)
-    if is_spouse(relation[-1:]):
-        name += "-in-law"
-    return name
-
-def get_spouse_indexes(relation):
-    spouse_indexes = [index for index, direct_relation in enumerate(relation)
-                      if direct_relation in ["Husband", "Wife"]]
-    return spouse_indexes
-
-def get_in_law_components(relation, spouse_indexes):
-    if is_spouse(relation[-1:]):
-        in_law_components = get_in_law_components_spouse_end(relation, spouse_indexes)
-    else:
-        in_law_components = get_in_law_components_no_spouse_end(relation, spouse_indexes)
-    return in_law_components
-
-def get_in_law_components_spouse_end(relation, spouse_indexes):
-    left_indexes = [-1] + spouse_indexes[:-1]
-    right_indexes = spouse_indexes[:]
-    in_law_components = [relation[left_index + 1:right_index]
-                         for left_index, right_index
-                         in zip(left_indexes, right_indexes)]
-    return in_law_components
-
-def get_in_law_components_no_spouse_end(relation, spouse_indexes):
-    left_indexes = [-1] + spouse_indexes[:]
-    right_indexes = spouse_indexes[:] + [len(relation)]
-    in_law_components = [relation[left_index + 1:right_index]
-                         for left_index, right_index
-                         in zip(left_indexes, right_indexes)]
-    return in_law_components
-
-def get_component_names(in_law_components, end_genders):
-    blood_relations = [Blood(component, end_gender) for component, end_gender in zip(in_law_components, end_genders)]
-    component_names = [blood_relation.get_name() for blood_relation in blood_relations]
-    return component_names
-
-def get_end_genders(relation, spouses):
-    end_genders = [get_gender(spouse) for spouse in spouses]
-    end_genders.append(get_gender(relation[-1]))
-    return end_genders
-
-def get_gender(direct_relation):
-    if direct_relation in ["Brother", "Father", "Son", "Husband"]:
-        return "Male"
-    else:
-        return "Female"
-
 class Blood():
+
+    """
+    This class finds a name for a blood relation
+    """
 
     def __init__(self, relations, end_gender):
         self.relations = relations
-        self.end_gender = end_gender
-        self.modify_last_relation_gender()
-        self.set_generations_up()
-        self.set_generations_down()
+        self.set_last_gender(end_gender)
+        self.set_generations()
         self.name = None
+
+    def set_last_gender(self, end_gender):
+        self.end_gender = end_gender
+        if self.relations != []:
+            self.modify_last_relation_gender()
 
     def modify_last_relation_gender(self):
         if self.end_gender == "Male":
@@ -103,6 +33,10 @@ class Blood():
         if self.relations[-1] in female_conversion:
             self.relations[-1] = female_conversion[self.relations[-1]]
 
+    def set_generations(self):
+        self.set_generations_up()
+        self.set_generations_down()
+
     def set_generations_up(self):
         self.generations_up = sum([1 for direct_relation in self.relations
                                    if direct_relation in ["Mother", "Father",
@@ -118,6 +52,12 @@ class Blood():
         return self.name
 
     def set_name(self):
+        if self.relations == []:
+            self.name = ""
+        else:
+            self.set_name_non_trivial()
+
+    def set_name_non_trivial(self):
         if self.generations_up <= 1 or self.generations_down <= 1:
             self.set_short_name()
         else:
@@ -158,10 +98,10 @@ class Blood():
 
     def set_great_name(self, generations, ending):
         if generations == 2:
-            self.name = f"Grand{ending.lower()}"
+            self.name = f"Grand{ending}"
         else:
             greats = self.get_greats(generations)
-            self.name = f"{greats} grand{ending.lower()}"
+            self.name = f"{greats} grand{ending}"
 
     def get_greats(self, count):
         if count == 3:

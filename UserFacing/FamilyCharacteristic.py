@@ -1,7 +1,7 @@
 from UserFacing.Characteristic import Characteristic
 from Utils import get_int_input
 from Utils import get_consecutive_list
-from UserFacing.RelationNaming import name_relation
+from UserFacing.Relation import Relation
 
 class FamilyCharacteristic(Characteristic):
 
@@ -237,4 +237,7 @@ class FamilyCharacteristic(Characteristic):
         return (direct_relation in ["Husband", "Wife"])
 
     def create_relation_names(self):
-        self.relations = [name_relation(relation) for relation in self.relations]
+        relation_objects = [Relation(relation) for relation in self.relations]
+        self.relation_names = [relation_obj.name for relation_obj in relation_objects]
+        for i, j in zip(self.relations, self.relation_names):
+            print(f"{i}: {j}")
