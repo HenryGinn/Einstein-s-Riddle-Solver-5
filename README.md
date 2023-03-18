@@ -87,13 +87,13 @@ Here we have covered rook constraints, and consistency constraints are covered i
 
 We need to ensure each rook problems are consistent with each other: if the Brit drinks milk and the person who drinks milk lives in the centre house, then the Brit must live in the centre house. For every pair of points that are not in the same group we need a constraint to rule out situations that make the rook problems inconsistent. We rephrase our example by saying that if the Brit drinks milk and the person who drinks milk lives in the centre house, then the Brit cannot live in any house but the centre house, and the centre house cannot be lived in by anyone but the Brit. There are 3 pairs being considered here. In each case they can either match or not match, which gives $2^3 = 8$ possibilities. We label these with a capital letter if the corresponding characteristics match, and a lowercase if they do not. We list the 3 pairs in our example below. Without loss of generality we can extend our following logic to all pairs of families and problems of other sizes as our arguments will be independent of the number of elements and factors.
 
-
-
-If the Brit is not the person who drinks milk for example, we know that in an <ol type="A">
+<ol type="A">
   <li>Nationality and drink</li>
   <li>Nationality and house order</li>
   <li>Drink and house order</li>
-</ol>optimal solution where the constraints of each rook problem are satisfied, then some non-Brit will drink milk and the Brit will drink something other than milk. This means that in the nationality and milk rook problem, the variables in the milk row (not including the Brit) and the variables in Brit row (not including milk) will sum to 2. As we know the Brit and the milk drinker are not the same person, only one of these can live in the centre house. This means the Brit and centre house variable and the milk and centre house variable must sum to at most 1. We can combine these into the following constraints. A case is consistent if and only if 0, 1, or all 3 of A, B, and C match, or equivalently, a case is inconsistent if and only if exactly 2 of A, B, and C match. This combined with the above motivates the following constraints, where each rule out one of the cases aBC, AbC, or ABc. We call these consistency constraints.
+</ol>
+
+If the Brit is not the person who drinks milk for example, we know that in an optimal solution where the constraints of each rook problem are satisfied, then some non-Brit will drink milk and the Brit will drink something other than milk. This means that in the nationality and milk rook problem, the variables in the milk row (not including the Brit) and the variables in Brit row (not including milk) will sum to 2. As we know the Brit and the milk drinker are not the same person, only one of these can live in the centre house. This means the Brit and centre house variable and the milk and centre house variable must sum to at most 1. We can combine these into the following constraints. A case is consistent if and only if 0, 1, or all 3 of A, B, and C match, or equivalently, a case is inconsistent if and only if exactly 2 of A, B, and C match. This combined with the above motivates the following constraints, where each rule out one of the cases aBC, AbC, or ABc. We call these consistency constraints.
 
 $$\text{aBC}: 2x_{\text{Brit, centre house}} + 2x_{\text{milk, centre house}} + \sum_{\text{nationality} \ne \text{Brit}} x_{\text{nationality, milk}} + \sum_{\text{drink} \ne \text{milk}} x_{\text{Brit, drink}} \le 4$$
 

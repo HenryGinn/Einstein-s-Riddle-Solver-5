@@ -31,7 +31,7 @@ def get_int_input_with_bounds(prompt, lower_bound, upper_bound):
     return int_input
 
 def attempt_get_int_input(prompt, lower_bound, upper_bound):
-    int_input = input(f"\n{prompt}")
+    int_input = input(f"{prompt}")
     check_functions, args = get_int_check_functions(lower_bound, upper_bound)
     int_input, input_valid = check_int_valid(int_input, check_functions, args)
     return int_input, input_valid

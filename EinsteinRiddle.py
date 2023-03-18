@@ -24,8 +24,8 @@ class EinsteinRiddle():
 
     def set_data_folders(self):
         self.set_parent_data_folder()
-        self.problem_structure_path = os.path.join(self.data_folder, "Problem Structure.txt")
-        self.clue_path = os.path.join(self.data_folder, "Clue Data.txt")
+        self.problem_structure_path = os.path.join(self.data_folder, "Problem Structure.json")
+        self.clue_path = os.path.join(self.data_folder, "Clue Data.json")
 
     def set_parent_data_folder(self):
         self.data_folder = os.path.join(self.puzzle_folders, self.name)
@@ -40,3 +40,9 @@ class EinsteinRiddle():
     def set_clues(self):
         self.clue_input = ClueInput(self)
         self.clue_input.set_clues()
+
+    def output_problem_structure(self):
+        if hasattr(self, "problem_structure"):
+            print(self.problem_structure)
+        else:
+            raise Exception("Run 'set_problem_structure' method first")

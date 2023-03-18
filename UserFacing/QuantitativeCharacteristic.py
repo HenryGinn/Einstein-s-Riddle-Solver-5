@@ -24,3 +24,6 @@ class QuantitativeCharacteristic(Characteristic):
         self.property_names.append(property_name)
         self.problem.all_property_names.append(property_name)
 
+    def get_data_dict(self):
+        data_dict = self.get_base_data_dict()
+        return data_dict

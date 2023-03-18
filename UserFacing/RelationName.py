@@ -1,6 +1,6 @@
 from UserFacing.Blood import Blood
 
-class Relation():
+class RelationName():
 
     def __init__(self, relation):
         self.relation = relation
