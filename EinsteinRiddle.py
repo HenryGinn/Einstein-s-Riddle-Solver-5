@@ -1,8 +1,8 @@
 import os
 import sys
 
-from UserFacing.ProblemStructure import ProblemStructure
-from UserFacing.ClueInput import ClueInput
+from UserFacing.ProblemStructure.ProblemStructure import ProblemStructure
+from UserFacing.Clues.Clues import Clues
 
 class EinsteinRiddle():
 
@@ -38,11 +38,17 @@ class EinsteinRiddle():
         self.problem_structure.set_problem_structure()
 
     def set_clues(self):
-        self.clue_input = ClueInput(self)
-        self.clue_input.set_clues()
+        self.clues_obj = Clues(self)
+        self.clues_obj.set_clues()
 
     def output_problem_structure(self):
         if hasattr(self, "problem_structure"):
             print(self.problem_structure)
         else:
-            raise Exception("Run 'set_problem_structure' method first")
+            raise Exception("Run 'set_problem_structure' method before outputting problem structure")
+
+    def output_clues(self):
+        if hasattr(self, "clues_obj"):
+            print(self.clues_obj)
+        else:
+            raise Exception("Run 'set_clues' method before outputting clues")

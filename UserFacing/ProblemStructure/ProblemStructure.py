@@ -1,11 +1,12 @@
 import os
 
 from Utils import get_int_input
-from UserFacing.RegularCharacteristic import RegularCharacteristic
-from UserFacing.QuantitativeCharacteristic import QuantitativeCharacteristic
-from UserFacing.FamilyCharacteristic import FamilyCharacteristic
-from UserFacing.FileSaveProblem import FileSaveProblem
-from UserFacing.FileLoadProblem import FileLoadProblem
+from Utils import get_yes_no_input
+from UserFacing.ProblemStructure.RegularCharacteristic import RegularCharacteristic
+from UserFacing.ProblemStructure.QuantitativeCharacteristic import QuantitativeCharacteristic
+from UserFacing.ProblemStructure.FamilyCharacteristic import FamilyCharacteristic
+from UserFacing.ProblemStructure.FileSaveProblem import FileSaveProblem
+from UserFacing.ProblemStructure.FileLoadProblem import FileLoadProblem
 
 class ProblemStructure():
 
@@ -31,8 +32,8 @@ class ProblemStructure():
 
     def set_problem_structure_from_user(self):
         self.set_element_count()
-        self.set_murder_variation()
         self.set_family_present()
+        self.set_murder_variation()
         self.set_characteristic_count()
         self.create_characteristic_objects()
 
@@ -41,19 +42,16 @@ class ProblemStructure():
         lower_bound = 2
         self.problem.element_count = get_int_input(prompt, lower_bound=lower_bound)
 
-    def set_murder_variation(self):
-        prompt = ("\nIs this problem in the murder mystery variation?\n"
-                  "1: No\n"
-                  "2: Yes\n")
-        murder_variation_input = get_int_input(prompt, 1, 2)
-        self.problem.murder_variation = {1: False, 2: True}[murder_variation_input]
-
     def set_family_present(self):
-        prompt = ("\nDoes this problem involve family relations?\n"
-                  "1: No\n"
-                  "2: Yes\n")
+        prompt = "\nDoes this problem involve family relations?"
+        family_present_input = get_yes_no_input(prompt)
         family_present_input = get_int_input(prompt, 1, 2)
         self.problem.family_present = {1: False, 2: True}[family_present_input]
+        
+    def set_murder_variation(self):
+        prompt = "\nIs this problem in the murder mystery variation?"
+        murder_variation_input = get_yes_no_input(prompt)
+        self.problem.murder_variation = {1: False, 2: True}[murder_variation_input]
     
     def set_characteristic_count(self):
         prompt = self.get_characteristic_count_prompt()

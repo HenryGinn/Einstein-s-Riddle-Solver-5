@@ -1,4 +1,4 @@
-from UserFacing.Blood import Blood
+from UserFacing.ProblemStructure.Blood import Blood
 
 class RelationName():
 

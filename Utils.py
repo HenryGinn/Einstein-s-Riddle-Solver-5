@@ -70,6 +70,13 @@ def bad_input_response(prompt):
     print(prompt)
     return False
 
+def get_yes_no_input(prompt):
+    new_prompt = (f"{prompt}\n"
+                  "1: Yes\n"
+                  "2: No\n")
+    yes_no_input = get_int_input(new_prompt, lower_bound=1, upper_bound=2)
+    return yes_no_input
+
 
 def get_non_repeating_input(prompt, input_list, get_input_function=None):
     get_input_function = get_get_input_function(get_input_function)
@@ -124,3 +131,22 @@ def get_consecutive_list(input_list, length):
     consecutive_list = [input_list[index:index + length]
                         for index in range(len(input_list) + 1 - length)]
     return consecutive_list
+
+
+def get_list_string(non_indented, indent=0):
+    if isinstance(non_indented, list) or isinstance(non_indented, tuple):
+        return get_indented_list(non_indented, indent)
+    elif isinstance(non_indented, str):
+        return get_indented_string(non_indented, indent)
+    else:
+        raise Exception(f"Cannot convert object of type {type(non_indented)} to list string")
+
+def get_indented_list(non_indented, indent):
+    joining_string = "\n" + f"{indent * ' '}"
+    output_string = "".join([f"{joining_string}{element}" for element in non_indented])
+    return output_string
+
+def get_indented_string(non_indented, indent):
+    joining_string = "\n" + f"{indent * ' '}"
+    output_string = "".join([f"{joining_string}{element}" for element in non_indented.split("\n")])
+    return output_string

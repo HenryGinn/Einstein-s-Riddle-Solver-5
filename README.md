@@ -13,6 +13,7 @@
 1. [Well Posedness and Finding Multiple Solutions](#well-posedness-and-finding-multiple-solutions)
 1. [Program Structure and Implementation](#program-structure-and-implementation)
 1. [Family Tree Construction](#family-tree-construction)
+1. [Clue Structure](#clue-structure)
 
 ---
 
@@ -280,3 +281,11 @@ This motivates the following implementation. We first split a relation into comp
 - Relation starts with but does not end with a spouse, and multiple spouses are mentioned: the first spouse should be removed before the usual processing, but unlike before we add the name back to the start at the end of the process. An example of this would be "Husband, Sister, Husband, Sister" which should be "Husband's brother-in-law's sister. Another option would be "Sister-in-law's sister-in-law", but this way distinguises it from "Brother, Wife, Brother, Wife".
 - Relation starts and ends with a spouse, but is not a spouse: an example of this would be "Husband, Sister, Husband". "Sister, Husband" translates as "Brother-in-law", but as this is a relation to the husband, it seems like we would need to add "-in-law" to the end of this. Instead we opt to refer to this as "Husband's brother-in-law". The first spousal relation is removed and the rest is processed in the same way as the previous case, and then the spousal name is added at the start.
 - Relation is a spouse: this case is very simple, it is just the name of the spousal relation with no changes needed.
+
+## Clue Structure
+
+We split the clues into three main types.
+
+- Regular clues. These relate the various characteristics together. They are a choice of what we call "subclues", although most clues consist of only one subclue. A subclue is of the form "the relation between property X and property Y is true/false". "The Brit lives in the red house", "The Norwegian lives next to the blue house", "The person who drinks water has an uncle who keeps horses", and "The german has no alibi" are all examples of subclues. Subclues need to be further split up based on the types of characteristics they involve.
+- Family clues. These clues give information about the structure of the family, but do not fit into the structure of a regular clue. For example specifying that an element is an only child, that an element is in the highest generation in the family, or specifying how many elements are at the same level of another element.
+- Murdery mystery clues. These clues give information about the ways people are guilty or not-guilty, but do not fit into the structure of a regular clue. Examples include giving information about how many people have an alibi, or the number of people who have exactly two of the requirements to be a murderer.

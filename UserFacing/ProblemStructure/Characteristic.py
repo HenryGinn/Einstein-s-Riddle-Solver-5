@@ -1,4 +1,5 @@
 from Utils import get_non_repeating_input
+from Utils import get_list_string
 
 class Characteristic():
 
@@ -23,7 +24,7 @@ class Characteristic():
         string = (f"Characteristic ID: {self.id}\n"
                   f"Characteristic type: {self.type}\n"
                   f"Characteristic name: {self.name}\n"
-                  f"Property names:{self.get_property_name_list(indent=2)}")
+                  f"Property names:{get_indented_list(self.property_names, indent=2)}")
         return string
 
     def get_property_name_list(self, indent=0):
@@ -44,5 +45,5 @@ class Characteristic():
     def __str__(self):
         string = (f"  Type: {self.type}\n"
                   f"  Name: {self.name}\n"
-                  f"  Property Names:{self.get_property_name_list(indent=4)}")
+                  f"  Property Names:{get_list_string(self.property_names, indent=4)}")
         return string
