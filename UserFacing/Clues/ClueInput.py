@@ -10,6 +10,7 @@ class ClueInput():
 
     def set_clue(self):
         self.set_clue_type()
+        self.clue.set_from_user()
 
     def set_clue_type(self):
         self.set_type_options()
