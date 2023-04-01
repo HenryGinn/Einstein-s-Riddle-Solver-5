@@ -1,9 +1,11 @@
 class DisplaySettings():
 
     window_size = "full"
-    edge_of_screen_buffer_x = 50
-    edge_of_screen_buffer_y = 50
+    window_buffer_x_ratio = 0.05
+    window_buffer_y_ratio = 0.05
     colour = "dark"
+    font_style = "Calibri"
+    text_ratio = 0.7
     
     def __init__(self, display):
         self.display = display
@@ -13,6 +15,7 @@ class DisplaySettings():
         self.process_window_size_kwargs()
         self.process_buffers_kwargs()
         self.process_colour_kwargs()
+        self.process_font_kwargs()
 
     def process_window_size_kwargs(self):
         if "size" in self.kwargs:
@@ -51,25 +54,39 @@ class DisplaySettings():
 
     def process_buffers_kwargs(self):
         if "buffer" in self.kwargs:
-            self.process_symmetry_buffer()
-        elif "buffer_x" in self.kwargs or "buffer_y" in self.kwargs:
-            self.process_asymmetric_buffers()
+            self.set_custom_buffers()
+        self.set_display_window_buffers()
 
-    def process_symmetry_buffer(self):
-        self.display.edge_of_screen_buffer_x = self.kwargs["buffer"]
-        self.display.edge_of_screen_buffer_y = self.kwargs["buffer"]
+    def set_custom_buffers(self):
+        buffers = self.kwargs["buffer"]
+        if len(buffers) == 1:
+            self.set_symmetric_window_buffer_ratios(buffers)
+        else:
+            self.set_asymmetric_buffer_ratios(buffers)
 
-    def process_asymmetric_buffers(self):
-        self.process_buffer_x()
-        self.process_buffer_y()
+    def set_symmetric_window_buffer_ratios(self, buffer):
+        self.set_window_buffer_ratio_x(buffer)
+        self.set_window_buffer_ratio_y(buffer)
 
-    def process_buffer_x(self):
-        if "buffer_x" in self.kwargs:
-            self.display.edge_of_screen_buffer_x = self.kwargs["buffer_x"]
+    def set_asymmetric_buffer_ratios(self, buffers):
+        self.set_window_buffer_ratio_x(buffers[0])
+        self.set_window_buffer_ratio_y(buffer[1])
 
-    def process_buffer_y(self):
-        if "buffer_y" in self.kwargs:
-            self.display.edge_of_screen_buffer_y = self.kwargs["buffer_y"]
+    def set_window_buffer_ratio_x(self, buffer):
+        if buffer < 0 or buffer > 1:
+            raise ValueError(f"Buffer value needs to be between 0 and 1: {self.buffer}")
+        else:
+            self.window_buffer_x_ratio = buffer
+
+    def set_window_buffer_ratio_y(self, buffer):
+        if buffer < 0 or buffer > 1:
+            raise ValueError(f"Buffer value needs to be between 0 and 1: {self.buffer}")
+        else:
+            self.window_buffer_y_ratio = buffer
+
+    def set_display_window_buffers(self):
+        self.display.window_buffer_x_ratio = self.window_buffer_x_ratio
+        self.display.window_buffer_y_ratio = self.window_buffer_y_ratio
     
 
     def process_colour_kwargs(self):
@@ -93,3 +110,17 @@ class DisplaySettings():
     def set_colours_dark(self):
         self.display.background_colour = "#001325"
         self.display.font_colour = "#FFFFFF"
+
+    def process_font_kwargs(self):
+        self.process_font_style()
+        self.process_text_ratio()
+
+    def process_font_style(self):
+        self.display.font_style = self.font_style
+        if "font" in self.kwargs:
+            self.display.font_style = self.kwargs["font"]
+
+    def process_text_ratio(self):
+        self.display.text_ratio = self.text_ratio
+        if "text_ratio" in self.kwargs:
+            self.display.text_ratio = self.kwargs["text_ratio"]

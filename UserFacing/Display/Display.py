@@ -1,6 +1,7 @@
 import tkinter as tk
 
-from UserFacing.Display.DisplaySettings import DisplaySettings 
+from UserFacing.Display.DisplaySettings import DisplaySettings
+from UserFacing.Display.Grid import Grid
 
 class Display():
 
@@ -27,49 +28,23 @@ class Display():
     
     def create_window(self):
         self.root = tk.Tk()
+        self.set_window_sizes()
         self.setup_window()
-        self.root.mainloop()
+        self.setup_canvas()
 
     def setup_window(self):
+        self.root.title(self.problem.name)
+        self.root.geometry(f"{self.window_width}x{self.window_height}-0+0")
+
+    def set_window_sizes(self):
         self.window_width = int(self.root.winfo_screenwidth() * self.window_width_multiplier)
-        self.window_height = int(self.root.winfo_screenheight() * self.window_height_multiplier)
-        self.root.geometry(f"{self.window_width}x{self.window_height}")
-        self.root.configure(bg=self.background_colour)
+        self.window_height = int((self.root.winfo_screenheight() - 134) * self.window_height_multiplier)
+
+    def setup_canvas(self):
+        self.canvas = tk.Canvas(self.root, width=self.window_width, height=self.window_height)
+        self.canvas.configure(bg=self.background_colour)
+        self.canvas.pack()
         
     def draw_grid_and_labels(self):
-        self.set_label_names()
-        #self.set_grid_size_constants()
-
-    def set_label_names(self):
-        self.set_label_names_down()
-        self.set_label_names_across()
-
-    def set_label_names_down(self):
-        characteristics_down = self.problem.characteristics[:-1]
-        self.label_names_down = [characteristic.display_names
-                                 for characteristic in characteristics_down]
-
-    def set_label_names_across(self):
-        characteristics_across = self.problem.characteristics[:0:-1]
-        self.label_names_across = [characteristic.display_names
-                                   for characteristic in characteristics_across]
-
-    def set_grid_size_constants(self):
-        self.set_max_dimensions()
-        self.set_cell_size()
-
-    def set_max_dimensions(self):
-        self.set_max_dimensions_labels()
-        self.set_cell_counts()
-
-    def set_max_dimensions_labels(self):
-        self.labels_width = max(self.label_names_down, key=len)
-        self.labels_height = max(self.label_names_across, key=len)
-
-    def set_cell_counts(self):
-        self.cell_count_horizontal = len(self.label_names_across)
-        self.cell_count_vertical = len(self.label_names_down)
-
-    def set_cell_size(self):
-        cell_height = (self.window_height - 2*self.edge_of_screen_buffer_y - self.labels_height)/self.cell_count_vertical
-        cell_width = (self.window_width - 2*self.edge_of_screen_buffer_y - self.labels_width)/self.cell_count_horizontal
+        grid_and_labels = Grid(self)
+        grid_and_labels.draw_grid_and_labels()
