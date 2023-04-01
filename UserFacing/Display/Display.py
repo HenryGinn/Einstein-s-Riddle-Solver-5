@@ -1,11 +1,8 @@
 import tkinter as tk
 
-class Display():
+from UserFacing.Display.DisplaySettings import DisplaySettings 
 
-    window_size = "full"
-    edge_of_screen_buffer_x = 50
-    edge_of_screen_buffer_y = 50
-    colour = "dark"
+class Display():
 
     def __init__(self, problem):
         self.problem = problem
@@ -21,98 +18,23 @@ class Display():
 
     def do_initialise_window(self, kwargs):
         self.process_kwargs(kwargs)
-        self.setup_window()
+        self.create_window()
         self.draw_grid_and_labels()
 
     def process_kwargs(self, kwargs):
-        self.process_window_size_kwargs(kwargs)
-        self.process_buffers_kwargs(kwargs)
-        self.process_colour_kwargs(kwargs)
-
-    def process_window_size_kwargs(self, kwargs):
-        if "size" in kwargs:
-            if kwargs["size"] == "half":
-                kwargs["size"] = "half_x"
-            self.window_size = kwargs["size"]
-
-    def process_buffers_kwargs(self, kwargs):
-        if "buffer" in kwargs:
-            self.process_symmetry_buffer(kwargs)
-        elif "buffer_x" in kwargs or "buffer_y" in kwargs:
-            self.process_asymmetric_buffers(kwargs)
-
-    def process_symmetry_buffer(self, kwargs):
-        self.edge_of_screen_buffer_x = kwargs["buffer"]
-        self.edge_of_screen_buffer_y = kwargs["buffer"]
-
-    def process_asymmetric_buffers(self, kwargs):
-        self.process_buffer_x(kwargs)
-        self.process_buffer_y(kwargs)
-
-    def process_buffer_x(self, kwargs):
-        if "buffer_x" in kwargs:
-            self.edge_of_screen_buffer_x = kwargs["buffer_x"]
-
-    def process_buffer_y(self, kwargs):
-        if "buffer_y" in kwargs:
-            self.edge_of_screen_buffer_y = kwargs["buffer_y"]
-
-    def process_colour_kwargs(self, kwargs):
-        if "colour" in kwargs:
-            self.colour = self.kwargs["colour"]
-
-    def setup_window(self):
+        display_settings = DisplaySettings(self)
+        display_settings.process_kwargs(kwargs)
+    
+    def create_window(self):
         self.root = tk.Tk()
-        self.set_window_size()
-        self.set_colours()
+        self.setup_window()
         self.root.mainloop()
 
-    def set_window_size(self):
-        window_size_functions = self.get_window_size_functions()
-        window_size_functions[self.window_size]()
+    def setup_window(self):
+        self.window_width = int(self.root.winfo_screenwidth() * self.window_width_multiplier)
+        self.window_height = int(self.root.winfo_screenheight() * self.window_height_multiplier)
         self.root.geometry(f"{self.window_width}x{self.window_height}")
-
-    def get_window_size_functions(self):
-        window_size_functions = {"full": self.set_window_size_full,
-                                 "half_x": self.set_window_size_half_x,
-                                 "half_y": self.set_window_size_half_y,
-                                 "quarter": self.set_window_size_quarter}
-        return window_size_functions
-
-    def set_window_size_full(self):
-        self.window_width = self.root.winfo_screenwidth()
-        self.window_height = self.root.winfo_screenheight()
-
-    def set_window_size_half_x(self):
-        self.window_width = int(self.root.winfo_screenwidth() / 2)
-        self.window_height = self.root.winfo_screenheight()
-
-    def set_window_size_half_y(self):
-        self.window_width = self.root.winfo_screenwidth()
-        self.window_height = int(self.root.winfo_screenheight() / 2)
-
-    def set_window_size_quarter(self):
-        self.window_width = int(self.root.winfo_screenwidth() / 2)
-        self.window_height = int(self.root.winfo_screenheight() / 2)
-
-    def set_colours(self):
-        set_colours_functions = self.get_set_colours_functions()
-        set_colours_functions[self.colour]()
-
-    def get_set_colours_functions(self):
-        set_colours_functions = {"light": self.set_colours_light,
-                                 "dark": self.set_colours_dark}
-        return set_colours_functions
-
-    def set_colours_light(self):
-        background_colour = "#FFFFFF"
-        self.root.configure(bg=background_colour)
-        self.font_colour = "#000000"
-
-    def set_colours_dark(self):
-        background_colour = "#001325"
-        self.root.configure(bg=background_colour)
-        self.font_colour = "#FFFFFF"
+        self.root.configure(bg=self.background_colour)
         
     def draw_grid_and_labels(self):
         self.set_label_names()
