@@ -1,8 +1,9 @@
 import tkinter as tk
+from itertools import accumulate
 
 class Grid():
 
-    font_height_width_ratio = 2
+    font_height_width_ratio = 1.5
 
     def __init__(self, display):
         self.display = display
@@ -20,6 +21,7 @@ class Grid():
         self.set_label_names()
         self.set_grid_size_constants()
         self.draw_labels()
+        self.draw_grid()
 
     def set_label_names(self):
         self.set_label_names_down()
@@ -84,12 +86,11 @@ class Grid():
     def set_font_kwargs(self):
         font_size = round(3 * self.display.text_ratio * self.cell_size / 4)
         self.display.font_kwargs = {"font": (self.display.font_style, font_size),
-                                    "fill": self.display.font_colour}
+                                    "fill": self.display.colour}
 
     def set_display_sizes(self):
         self.set_grid_dimensions()
         self.set_label_sizes()
-        self.set_grid_and_label_dimensions()
 
     def set_grid_dimensions(self):
         self.grid_width = self.cell_count_horizontal * self.cell_size
@@ -99,9 +100,6 @@ class Grid():
         self.labels_width = self.cell_size * self.display.text_ratio * self.labels_length_down / self.font_height_width_ratio
         self.labels_height = self.cell_size * self.display.text_ratio * self.labels_length_across / self.font_height_width_ratio
 
-    def set_grid_and_label_dimensions(self):
-        self.grid_and_label_width = self.grid_width + self.labels_width
-        self.grid_and_label_height = self.grid_height + self.labels_height
 
     def set_grid_reference_coordinates(self):
         if self.slack_direction == "Horizontal":
@@ -117,18 +115,102 @@ class Grid():
         self.grid_reference_x = self.window_buffer_x + self.labels_width
         self.grid_reference_y = int((self.window_height + self.labels_height - self.grid_height)/2)
 
+
     def draw_labels(self):
         self.draw_labels_down()
         self.draw_labels_across()
 
     def draw_labels_down(self):
         for index, label in enumerate(self.label_names_down):
-            x_position = self.grid_reference_x - int(self.labels_width / 2)
-            y_position = self.grid_reference_y + int((index + 1/2) * self.cell_size)
-            self.canvas.create_text(x_position, y_position, text=label, **self.display.font_kwargs)
+            self.draw_label_down(index, label)
+
+    def draw_label_down(self, index, label):
+        x_position = self.grid_reference_x - int(self.labels_width / 2)
+        y_position = self.grid_reference_y + int((index + 1/2) * self.cell_size)
+        self.canvas.create_text(x_position, y_position, text=label,
+                                **self.display.font_kwargs)
 
     def draw_labels_across(self):
         for index, label in enumerate(self.label_names_across):
-            x_position = self.grid_reference_x + int((index + 1/2) * self.cell_size)
-            y_position = self.grid_reference_y - int(self.labels_height / 2)
-            self.canvas.create_text(x_position, y_position, text=label, angle=90, **self.display.font_kwargs)
+            self.draw_label_across(index, label)
+
+    def draw_label_across(self, index, label):
+        x_position = self.grid_reference_x + int((index + 1/2) * self.cell_size)
+        y_position = self.grid_reference_y - int(self.labels_height / 2)
+        self.canvas.create_text(x_position, y_position, text=label,
+                                angle=90, **self.display.font_kwargs)
+
+    def draw_grid(self):
+        self.set_group_sizes()
+        self.draw_vertical_lines()
+        self.draw_horizontal_lines()
+
+    def set_group_sizes(self):
+        self.group_sizes_across = [len(labels) for labels in self.label_names_across_groups]
+        self.group_sizes_across_cumulative = list(accumulate(self.group_sizes_across))
+        self.group_sizes_down = [len(labels) for labels in self.label_names_down_groups]
+        self.group_sizes_down_cumulative = list(accumulate(self.group_sizes_down))
+
+    def draw_vertical_lines(self):
+        self.draw_vertical_lines_narrow()
+        self.draw_vertical_lines_thick()
+
+    def draw_vertical_lines_narrow(self):
+        for group_index, label_group in enumerate(self.label_names_down_groups):
+            label_groups = self.label_names_down_groups[::-1][group_index:]
+            label_count = sum([len(labels) for labels in label_groups])
+            end_y = self.grid_reference_y + label_count * self.cell_size
+            for label in label_group[1:]:
+                index = self.label_names_down.index(label)
+                x_position = self.grid_reference_x + index * self.cell_size
+                self.canvas.create_line(x_position, self.grid_reference_y,
+                                        x_position, end_y,
+                                        fill=self.display.colour)
+
+    def draw_vertical_lines_thick(self):
+        self.draw_first_thick_vertical_line()
+        for group_size_down, group_size_across in zip(self.group_sizes_down_cumulative[::-1],
+                                                      self.group_sizes_across_cumulative):
+            x_position = self.grid_reference_x + group_size_across * self.cell_size
+            end_y = self.grid_reference_y + group_size_down * self.cell_size
+            self.canvas.create_line(x_position, self.grid_reference_y,
+                                    x_position, end_y,
+                                    fill=self.display.colour, width=3)
+
+    def draw_first_thick_vertical_line(self):
+        end_y = self.grid_reference_y + self.grid_height
+        self.canvas.create_line(self.grid_reference_x, self.grid_reference_y,
+                                self.grid_reference_x, end_y,
+                                fill=self.display.colour, width=3)
+
+    def draw_horizontal_lines(self):
+        self.draw_horizontal_lines_narrow()
+        self.draw_horizontal_lines_thick()
+
+    def draw_horizontal_lines_narrow(self):
+        for group_index, label_group in enumerate(self.label_names_across_groups):
+            label_groups = self.label_names_across_groups[::-1][group_index:]
+            label_count = sum([len(labels) for labels in label_groups])
+            end_x = self.grid_reference_x + label_count * self.cell_size
+            for label in label_group[1:]:
+                index = self.label_names_across.index(label)
+                y_position = self.grid_reference_y + index * self.cell_size
+                self.canvas.create_line(self.grid_reference_x, y_position,
+                                        end_x, y_position,
+                                        fill=self.display.colour)
+
+    def draw_horizontal_lines_thick(self):
+        self.draw_first_thick_horizontal_line()
+        for group_size_across, group_size_down in zip(self.group_sizes_across_cumulative[::-1],
+                                                      self.group_sizes_down_cumulative):
+            end_x = self.grid_reference_x + group_size_across * self.cell_size
+            y_position = self.grid_reference_y + group_size_down * self.cell_size
+            self.canvas.create_line(self.grid_reference_x, y_position,
+                                    end_x, y_position,
+                                    fill=self.display.colour, width=3)
+
+    def draw_first_thick_horizontal_line(self):
+        end_x = self.grid_reference_x + self.grid_width
+        self.canvas.create_line(self.grid_reference_x, self.grid_reference_y,
+                                end_x, self.grid_reference_y,
+                                fill=self.display.colour, width=3)

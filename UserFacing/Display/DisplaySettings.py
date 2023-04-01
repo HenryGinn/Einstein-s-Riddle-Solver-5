@@ -59,10 +59,10 @@ class DisplaySettings():
 
     def set_custom_buffers(self):
         buffers = self.kwargs["buffer"]
-        if len(buffers) == 1:
-            self.set_symmetric_window_buffer_ratios(buffers)
-        else:
+        if hasattr(buffers, "__iter__"):
             self.set_asymmetric_buffer_ratios(buffers)
+        else:
+            self.set_symmetric_window_buffer_ratios(buffers)
 
     def set_symmetric_window_buffer_ratios(self, buffer):
         self.set_window_buffer_ratio_x(buffer)
@@ -105,11 +105,11 @@ class DisplaySettings():
 
     def set_colours_light(self):
         self.display.background_colour = "#FFFFFF"
-        self.display.font_colour = "#000000"
+        self.display.colour = "#000000"
 
     def set_colours_dark(self):
         self.display.background_colour = "#001325"
-        self.display.font_colour = "#FFFFFF"
+        self.display.colour = "#FFFFFF"
 
     def process_font_kwargs(self):
         self.process_font_style()

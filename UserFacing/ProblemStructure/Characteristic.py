@@ -45,6 +45,7 @@ class Characteristic():
 
     def set_display_names(self):
         self.display_names = self.property_names[:self.problem.element_count]
+        self.display_names = [str(name) for name in self.display_names]
 
     def __str__(self):
         string = (f"  Type: {self.type}\n"
