@@ -191,10 +191,8 @@ class Blood():
         return number_sound
 
     def get_quantity_string(self, number):
-        if number == 1:
-            quantity = "once"
-        elif number == 2:
-            quantity = "twice"
+        quantity_dict = {1: "once", 2: "twice", 3: "thrice"}
+        if number in quantity_dict:
+            return quantity_dict[number]
         else:
-            quantity = f"{number} times"
-        return quantity
+            return f"{number} times"

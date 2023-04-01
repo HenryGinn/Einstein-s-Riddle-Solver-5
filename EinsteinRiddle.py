@@ -3,12 +3,14 @@ import sys
 
 from UserFacing.ProblemStructure.ProblemStructure import ProblemStructure
 from UserFacing.Clues.Clues import Clues
+from UserFacing.Display.Display import Display
 
 class EinsteinRiddle():
 
     def __init__(self, name):
         self.name = name
         self.set_paths()
+        self.initialise_objects()
 
     def set_paths(self):
         self.repo_path = sys.path[0]
@@ -33,6 +35,9 @@ class EinsteinRiddle():
             print(f"Making '{self.name}' folder\n")
             os.mkdir(self.data_folder)
 
+    def initialise_objects(self):
+        self.display_obj = Display(self)
+
     def set_problem_structure(self):
         self.problem_structure = ProblemStructure(self)
         self.problem_structure.set_problem_structure()
@@ -52,3 +57,6 @@ class EinsteinRiddle():
             print(self.clues_obj)
         else:
             raise Exception("Run 'set_clues' method before outputting clues")
+
+    def display(self, **kwargs):
+        self.display_obj.display(kwargs)

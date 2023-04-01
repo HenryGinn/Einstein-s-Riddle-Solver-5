@@ -12,7 +12,7 @@ class Characteristic():
     def set_from_user(self):
         self.set_characteristic_name()
         self.set_property_names()
-        pass
+        self.set_display_names()
 
     def set_characteristic_name_general(self):
         prompt = "What is the name of the characteristic: "
@@ -41,6 +41,10 @@ class Characteristic():
     def load_from_dict(self, characteristic_dict):
         self.name = characteristic_dict["Name"]
         self.property_names = characteristic_dict["Properties"]
+        self.set_display_names()
+
+    def set_display_names(self):
+        self.display_names = self.property_names[:self.problem.element_count]
 
     def __str__(self):
         string = (f"  Type: {self.type}\n"

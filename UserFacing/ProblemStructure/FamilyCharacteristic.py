@@ -51,7 +51,6 @@ class FamilyCharacteristic(Characteristic):
                   "If you do not know, enter -1\n")
         self.generations_old = get_int_input(prompt, -1, self.problem.element_count - 1)
         self.process_generations_old()
-        print(self.generations_old)
 
     def process_generations_old(self):
         if self.generations_old == -1:
@@ -101,4 +100,5 @@ class FamilyCharacteristic(Characteristic):
         self.name = characteristic_dict["Name"]
         relation_data = [list(relation.values()) for relation in characteristic_dict["Properties"]]
         self.relations, self.property_names = zip(*relation_data)
+        self.set_display_names()
         
