@@ -6,6 +6,7 @@ class DisplaySettings():
     colour = "dark"
     font_style = "Calibri"
     text_ratio = 0.7
+    text_angle = 60
     
     def __init__(self, display):
         self.display = display
@@ -114,6 +115,7 @@ class DisplaySettings():
     def process_font_kwargs(self):
         self.process_font_style()
         self.process_text_ratio()
+        self.process_text_angle()
 
     def process_font_style(self):
         self.display.font_style = self.font_style
@@ -124,3 +126,8 @@ class DisplaySettings():
         self.display.text_ratio = self.text_ratio
         if "text_ratio" in self.kwargs:
             self.display.text_ratio = self.kwargs["text_ratio"]
+
+    def process_text_angle(self):
+        self.display.text_angle = self.text_angle
+        if "text_angle" in self.kwargs:
+            self.display.text_angle = self.kwargs["text_angle"]
