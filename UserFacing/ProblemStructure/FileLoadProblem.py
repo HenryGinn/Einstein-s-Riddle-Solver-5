@@ -3,6 +3,7 @@ import json
 from UserFacing.ProblemStructure.RegularCharacteristic import RegularCharacteristic
 from UserFacing.ProblemStructure.QuantitativeCharacteristic import QuantitativeCharacteristic
 from UserFacing.ProblemStructure.FamilyCharacteristic import FamilyCharacteristic
+from UserFacing.ProblemStructure.MurderCharacteristic import MurderCharacteristic
 
 class FileLoadProblem():
 
@@ -47,10 +48,13 @@ class FileLoadProblem():
 
     def load_murder_mystery_data(self):
         self.problem.murder_variation = self.problem_structure_dict["Murder Mystery Variation"]
+        if self.problem.murder_variation:
+            self.problem_structure.add_murder_characteristic()
 
     def set_family_family_present(self):
-        last_characteristic = self.problem.characteristics[-1]
-        self.problem.family_present = (last_characteristic.type == "Family")
+        characteristics_are_family = [(characteristic.type == "Family")
+                                      for characteristic in self.problem.characteristics]
+        self.problem.family_present = (True in characteristics_are_family)
     
     def __str__(self):
         string = json.dumps(self.problem_structure_dict,

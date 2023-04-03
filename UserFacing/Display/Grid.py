@@ -16,8 +16,8 @@ class Grid():
     def inherit_window_parameters(self):
         self.window_width = self.display.window_width
         self.window_height = self.display.window_height
-        self.window_buffer_x = int(self.window_width * self.display.window_buffer_x_ratio)
-        self.window_buffer_y = int(self.window_width * self.display.window_buffer_y_ratio)
+        self.window_buffer_x = round(self.window_width * self.display.window_buffer_x_ratio)
+        self.window_buffer_y = round(self.window_height * self.display.window_buffer_y_ratio)
 
     def draw_grid_and_labels(self):
         self.set_label_names()
@@ -66,21 +66,20 @@ class Grid():
         self.set_font_kwargs()
 
     def get_potential_cell_width(self):
-        allocated_height = self.window_height - 2*self.window_buffer_y
-        numerator = allocated_height * self.font_height_width_ratio
+        allocated_width = self.window_width - 2*self.window_buffer_x
+        numerator = allocated_width * self.font_height_width_ratio
         denominator = self.cell_count_vertical*self.font_height_width_ratio + self.labels_length_across*self.display.text_ratio
         cell_width = numerator / denominator
         return cell_width
 
     def get_potential_cell_height(self):
-        allocated_width = self.window_height - 2*self.window_buffer_y
-        numerator = allocated_width * self.font_height_width_ratio
+        allocated_height = self.window_height - 2*self.window_buffer_y
+        numerator = allocated_height * self.font_height_width_ratio
         denominator = self.cell_count_horizontal*self.font_height_width_ratio + self.labels_length_down*self.display.text_ratio
         cell_height = numerator / denominator
         return cell_height
 
     def set_slack_direction_from_cell_dimensions(self, cell_width, cell_height):
-        print(cell_width, cell_height)
         if cell_width >= cell_height:
             self.slack_direction = "Horizontal"
         else:
@@ -240,7 +239,7 @@ class Grid():
 
     def set_horizontal_lines_narrow_x_ends(self):
         lengths_iterable = enumerate(self.group_sizes_across_cumulative[::-1])
-        x_end_indexes = self.get_y_end_indexes(lengths_iterable)
+        x_end_indexes = self.get_x_end_indexes(lengths_iterable)
         x_ends = np.array(x_end_indexes)*self.cell_size + self.grid_reference_x
         self.horizontal_lines_narrow_x_ends = x_ends
 
@@ -252,7 +251,7 @@ class Grid():
 
     def set_horizontal_lines_narrow_y_positions(self):
         y_positions = [index for index in range(self.cell_count_vertical)
-                       if index not in [0] + self.group_sizes_across_cumulative]
+                       if index not in [0] + self.group_sizes_down_cumulative]
         y_positions = np.array(y_positions) * self.cell_size + self.grid_reference_y
         self.horizontal_lines_narrow_y_positions = y_positions
 

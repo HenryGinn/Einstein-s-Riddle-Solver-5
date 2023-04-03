@@ -5,6 +5,7 @@ from Utils import get_yes_no_input
 from UserFacing.ProblemStructure.RegularCharacteristic import RegularCharacteristic
 from UserFacing.ProblemStructure.QuantitativeCharacteristic import QuantitativeCharacteristic
 from UserFacing.ProblemStructure.FamilyCharacteristic import FamilyCharacteristic
+from UserFacing.ProblemStructure.MurderCharacteristic import MurderCharacteristic
 from UserFacing.ProblemStructure.FileSaveProblem import FileSaveProblem
 from UserFacing.ProblemStructure.FileLoadProblem import FileLoadProblem
 
@@ -70,6 +71,7 @@ class ProblemStructure():
         self.problem.characteristics = [self.get_characteristic_obj(characteristic_number)
                                         for characteristic_number in characteristic_numbers]
         self.add_family_characteristic()
+        self.add_murder_characteristic()
 
     def get_characteristic_obj(self, characteristic_number):
         characteristic_type_ID = self.get_characteristic_type()
@@ -106,6 +108,13 @@ class ProblemStructure():
             family_characteristic = self.make_characteristic_obj(characteristic_number,
                                                                  FamilyCharacteristic)
             self.problem.characteristics.append(family_characteristic)
+
+    def add_murder_characteristic(self):
+        if self.problem.murder_variation:
+            characteristic_number = len(self.problem.characteristics)
+            murder_characteristic = self.make_characteristic_obj(characteristic_number,
+                                                               MurderCharacteristic)
+            self.problem.characteristics.append(murder_characteristic)
 
     def save_problem_structure_to_file(self):
         file_save = FileSaveProblem(self)
