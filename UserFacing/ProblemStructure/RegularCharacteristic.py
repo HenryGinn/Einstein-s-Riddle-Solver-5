@@ -1,5 +1,5 @@
 from UserFacing.ProblemStructure.Characteristic import Characteristic
-from Utils import get_non_repeating_input
+from Utils.Input import get_non_repeating_input
 
 class RegularCharacteristic(Characteristic):
 

@@ -1,13 +1,14 @@
 import os
 
-from Utils import get_int_input
-from Utils import get_yes_no_input
 from UserFacing.ProblemStructure.RegularCharacteristic import RegularCharacteristic
 from UserFacing.ProblemStructure.QuantitativeCharacteristic import QuantitativeCharacteristic
 from UserFacing.ProblemStructure.FamilyCharacteristic import FamilyCharacteristic
 from UserFacing.ProblemStructure.MurderCharacteristic import MurderCharacteristic
 from UserFacing.ProblemStructure.FileSaveProblem import FileSaveProblem
 from UserFacing.ProblemStructure.FileLoadProblem import FileLoadProblem
+from Utils.IntInput import get_int_input
+from Utils.Input import get_yes_no_input
+from Utils.Strings import get_list_string
 
 class ProblemStructure():
 
@@ -124,7 +125,7 @@ class ProblemStructure():
         element_string = self.get_element_string()
         characteristic_string = self.get_characteristic_string()
         murder_mystery_string = self.get_murder_mystery_string()
-        string = f"\n{element_string}\n\n{characteristic_string}\n\n{murder_mystery_string}\n"
+        string = f"\n{element_string}\n{characteristic_string}\n{murder_mystery_string}\n"
         return string
     
     def get_element_string(self):
@@ -135,15 +136,9 @@ class ProblemStructure():
 
     def get_characteristic_string(self):
         if hasattr(self.problem, "characteristics"):
-            return self.do_get_characteristic_string()
+            return get_list_string(self.problem.characteristics)
         else:
             return "Characteristics: None"
-
-    def do_get_characteristic_string(self):
-        string = "\n\n".join(str(characteristic_obj)
-                           for characteristic_obj in self.problem.characteristics)
-        string = f"Characteristics:\n{string}"
-        return string
 
     def get_murder_mystery_string(self):
         if hasattr(self.problem, "murder_variation"):

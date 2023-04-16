@@ -1,4 +1,4 @@
-from Utils import get_consecutive_list
+from Utils.Tools import get_consecutive_list
 
 class Relations():
     

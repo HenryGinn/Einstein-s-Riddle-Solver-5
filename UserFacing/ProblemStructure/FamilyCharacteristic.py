@@ -1,7 +1,7 @@
 from UserFacing.ProblemStructure.Characteristic import Characteristic
 from UserFacing.ProblemStructure.Relations import Relations
 from UserFacing.ProblemStructure.RelationName import RelationName
-from Utils import get_int_input
+from Utils.IntInput import get_int_input
 
 class FamilyCharacteristic(Characteristic):
 

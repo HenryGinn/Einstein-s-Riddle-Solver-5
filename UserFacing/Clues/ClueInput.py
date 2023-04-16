@@ -1,20 +1,15 @@
 from UserFacing.Clues.ClueRegular import ClueRegular
 from UserFacing.Clues.ClueFamily import ClueFamily
 from UserFacing.Clues.ClueMurder import ClueMurder
-from Utils import get_int_input
+from UserFacing.Clues.Clue import Clue
+from Utils.IntInput import get_int_input
 
 class ClueInput():
 
     def __init__(self, problem):
         self.problem = problem
-
-    def set_clue(self):
-        self.set_clue_type()
-        self.clue.set_from_user()
-
-    def set_clue_type(self):
         self.set_type_options()
-        self.process_clue_type_options()
+        self.set_clue_type_prompt()
 
     def set_type_options(self):
         self.add_type_regular()
@@ -40,19 +35,7 @@ class ClueInput():
         for type_number, clue_type_prompt in enumerate(self.type_prompt_options):
             self.clue_type_prompt += f"{type_number + 1}: {clue_type_prompt}\n"
 
-    def process_clue_type_options(self):
-        if len(self.type_options) == 1:
-            self.clue = ClueRegular(self)
-        else:
-            self.ask_clue_type()
-
-    def ask_clue_type(self):
-        self.set_clue_type_prompt()
-        clue_class = self.get_clue_class()
-        self.clue = clue_class(self)
-
-    def get_clue_class(self):
-        options_count = len(self.type_options)
-        clue_type_input = get_int_input(self.clue_type_prompt, 1, options_count)
-        clue_class = self.type_options[clue_type_input - 1]
-        return clue_class
+    def get_clue_from_user(self):
+        clue = Clue(self.problem)
+        clue.set_from_user()
+        return clue

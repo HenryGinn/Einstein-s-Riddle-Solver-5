@@ -1,9 +1,8 @@
-class ClueMurder():
+from UserFacing.Clues.Subclue import Subclue
+from Utils.IntInput import get_int_input
 
-    def __init__(self, problem):
-        self.problem = problem
+class ClueMurder(Subclue):
+
+    def __init__(self, problem, index):
+        Subclue.__init__(self, problem, index)
         self.type = "Murder"
-
-    def __str__(self):
-        string = (f"Type: {self.type}")
-        return string

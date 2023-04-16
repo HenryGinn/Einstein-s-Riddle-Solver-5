@@ -1,5 +1,5 @@
-from Utils import get_non_repeating_input
-from Utils import get_list_string
+from Utils.Input import get_non_repeating_input
+from Utils.Strings import get_list_string
 
 class Characteristic():
 
@@ -24,13 +24,8 @@ class Characteristic():
         string = (f"Characteristic ID: {self.id}\n"
                   f"Characteristic type: {self.type}\n"
                   f"Characteristic name: {self.name}\n"
-                  f"Property names:{get_indented_list(self.property_names, indent=2)}")
+                  f"Property names:\n{get_list_string(self.property_names)}")
         return string
-
-    def get_property_name_list(self, indent=0):
-        joining_string = "\n" + f"{indent * ' '}"
-        property_names = "".join([f"{joining_string}{name}" for name in self.property_names])
-        return property_names
 
     def get_base_data_dict(self):
         base_data_dict = {"Type": self.type,
@@ -48,7 +43,7 @@ class Characteristic():
         self.display_names = [str(name) for name in self.display_names]
 
     def __str__(self):
-        string = (f"  Type: {self.type}\n"
-                  f"  Name: {self.name}\n"
-                  f"  Property Names:{get_list_string(self.property_names, indent=4)}")
+        string = (f"Type: {self.type}\n"
+                  f"Name: {self.name}\n"
+                  f"Property Names:\n{get_list_string(self.property_names)}")
         return string

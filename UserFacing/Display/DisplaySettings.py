@@ -100,7 +100,7 @@ class DisplaySettings():
         set_colours_functions[self.colour]()
 
     def get_set_colours_functions(self):
-        set_colours_functions = {"light": self.set_colours_light,
+        set_colours_functions = {"psycho": self.set_colours_light,
                                  "dark": self.set_colours_dark}
         return set_colours_functions
 
