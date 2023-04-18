@@ -7,6 +7,7 @@ class QuantitativeCharacteristic(Characteristic):
     def __init__(self, ID, problem):
         Characteristic.__init__(self, ID, problem)
         self.type = "Quantitative"
+        self.problem.quantitive_characteristics_present = True
     
     def set_characteristic_name(self):
         self.set_characteristic_name_general()

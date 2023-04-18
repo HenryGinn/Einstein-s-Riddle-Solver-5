@@ -20,7 +20,3 @@ class RegularCharacteristic(Characteristic):
         property_name = get_non_repeating_input(prompt, self.problem.all_property_names)
         self.property_names.append(property_name)
         self.problem.all_property_names.append(property_name)
-
-    def get_data_dict(self):
-        data_dict = self.get_base_data_dict()
-        return data_dict

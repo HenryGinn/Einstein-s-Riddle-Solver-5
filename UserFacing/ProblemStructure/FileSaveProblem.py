@@ -23,7 +23,8 @@ class FileSaveProblem():
 
     def set_characteristics_data(self):
         characteristics_list = [characteristic_obj.get_data_dict()
-                                for characteristic_obj in self.problem.characteristics]
+                                for characteristic_obj in self.problem.characteristics
+                                if characteristic_obj.type != "Murder"]
         self.problem_structure_dict["Characteristics"] = characteristics_list
 
     def set_murder_mystery_data(self):

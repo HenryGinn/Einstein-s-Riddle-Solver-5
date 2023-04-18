@@ -1,11 +1,36 @@
 from UserFacing.Clues.Subclue import Subclue
+from Utils.Input import get_options_input
 from Utils.IntInput import get_int_input
 
 class ClueRegular(Subclue):
 
-    def __init__(self, problem, index):
-        Subclue.__init__(self, problem, index)
+    def __init__(self, clue, index):
+        Subclue.__init__(self, clue, index)
         self.type = "Regular"
+        self.set_subtype_function_dict()
+
+    def set_subtype_function_dict(self):
+        self.subtype_function_dict = {"Concrete": self.concrete_subtype,
+                                      "Quantitive": self.quantitive_subtype,
+                                      "Family": self.family_subtype}
 
     def set_from_user(self):
-        pass
+        subtype_input_index = self.get_subtype_input() - 1
+        subtype_names = list(self.clue_input.regular_subclue_subtypes.keys())
+        subtype_name = subtype_names[subtype_input_index]
+        self.subtype_function_dict[subtype_name]()
+
+    def get_subtype_input(self):
+        base_prompt = "What type of regular subclue is this?"
+        options = self.clue_input.regular_subclue_subtypes.values()
+        subtype_input = get_options_input(base_prompt, options)
+        return subtype_input
+        
+    def concrete_subtype(self):
+        print("Concrete")
+
+    def quantitive_subtype(self):
+        print("Quantitative")
+
+    def family_subtype(self):
+        print("Family")

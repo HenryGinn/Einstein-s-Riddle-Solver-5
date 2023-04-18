@@ -49,6 +49,7 @@ The goal of the riddle is to determine who owns the fish. The class of problems 
 - Characteristic: the various properties that an element can have. In Einstein's riddle these are house colour, number, pet, etc
 - Property: an option for a characteristic that an element could have. In Einstein's riddle, "red house" is a property of the Brit
 - Group: the collection of properties that an element could have as a characteristic. For example, the group of pets is dog, cat, bird, horse, and fish.
+- Concrete property: a property that is explicitely mentioned. "The uncle of the person who lives in the centre house" is not concrete, but "The person who lives in the centre house" is.
 
 ### Problem Size
 
@@ -286,6 +287,10 @@ This motivates the following implementation. We first split a relation into comp
 
 Each clue is split into a choice of subclues, so it is in the form "at least one of subclue 1,$\dots$, subclue $n$ hold". A subclue is something that gives one piece of information, and any clue that gives one piece of information will be formulated as a choice of a single subclue. We split the subclues into three main types.
 
-- Regular clues. These relate the various characteristics together and are of the form "the relation between property X and property Y is true/false". "The Brit lives in the red house", "The Norwegian lives next to the blue house", "The person who drinks water has an uncle who keeps horses", and "The german has no alibi" are all examples of subclues. These subclues need to be further split up based on the types of characteristics they involve.
+- Regular clues. These relate the various characteristics together and are of the form "The relation between property X and property Y is true/false". "The Brit lives in the red house", "The Norwegian lives next to the blue house", "The person who drinks water has an uncle who keeps horses", and "The german has no alibi" are all examples of subclues. These subclues need to be further split up based on the types of characteristics they involve.
 - Family clues. These clues give information about the structure of the family, but do not fit into the structure of a regular clue. For example specifying that an element is an only child, that an element is in the highest generation in the family, or specifying how many elements are at the same level of another element.
 - Murdery mystery clues. These clues give information about the ways people are guilty or not guilty, but do not fit into the structure of a regular clue. Examples include giving information about how many people have an alibi, or the number of people who have exactly two of the requirements to be a murderer.
+
+### Regular Clues
+
+We split these into subtypes. Clues that relate two concrete properties together are the main type. An example would be "The person who lives in the second house is the person who keeps cats", and a non-example would be "The person who is neighbours with the second house is the person who keeps cats". This non-example is the second subtype, a quantitive relation. This relates two concrete properties via a quantitive characteristic. In the example of "The white house is to the left of the green house", the two concrete properties are "White" and "Green" and house order is the quantitive characteristic. The third type is family relations. This is where any two concrete properties are related via a relation. We do not currently include the case of non-concrete properties being linked via a quantitive characteristic such as "The uncle of the person who smokes blends is neighbours with the person who drinks beer", or "The neighbour of the person who smokes blends has an uncle who drinks beer".

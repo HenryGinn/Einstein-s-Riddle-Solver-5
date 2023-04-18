@@ -13,10 +13,14 @@ from Utils.Strings import get_list_string
 class ProblemStructure():
 
     def __init__(self, problem):
-        self.problem = problem
+        self.initialise_problem(problem)
         self.path = problem.problem_structure_path
         self.problem.characteristic_names = []
         self.problem.all_property_names = []
+
+    def initialise_problem(self, problem):
+        self.problem = problem
+        self.problem.quantitive_characteristics_present = False
 
     def set_problem_structure(self):
         if os.path.exists(self.path):
@@ -47,13 +51,12 @@ class ProblemStructure():
     def set_family_present(self):
         prompt = "\nDoes this problem involve family relations?"
         family_present_input = get_yes_no_input(prompt)
-        family_present_input = get_int_input(prompt, 1, 2)
-        self.problem.family_present = {1: False, 2: True}[family_present_input]
+        self.problem.family_present = {1: True, 2: False}[family_present_input]
         
     def set_murder_variation(self):
         prompt = "\nIs this problem in the murder mystery variation?"
         murder_variation_input = get_yes_no_input(prompt)
-        self.problem.murder_variation = {1: False, 2: True}[murder_variation_input]
+        self.problem.murder_variation = {1: True, 2: False}[murder_variation_input]
     
     def set_characteristic_count(self):
         prompt = self.get_characteristic_count_prompt()

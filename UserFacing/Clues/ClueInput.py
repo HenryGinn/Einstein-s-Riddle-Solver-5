@@ -10,6 +10,7 @@ class ClueInput():
         self.problem = problem
         self.set_type_options()
         self.set_clue_type_prompt()
+        self.set_subclue_subtypes()
 
     def set_type_options(self):
         self.add_type_regular()
@@ -37,5 +38,30 @@ class ClueInput():
 
     def get_clue_from_user(self):
         clue = Clue(self.problem)
+        clue.clue_input = self
         clue.set_from_user()
         return clue
+    
+
+    def set_subclue_subtypes(self):
+        self.set_regular_subclue_subtypes()
+
+    def set_regular_subclue_subtypes(self):
+        self.initialise_regular_subclue_subtypes()
+        self.add_regular_subclue_family_subtype()
+        self.add_regular_subclue_family_subtype()
+
+    def initialise_regular_subclue_subtypes(self):
+        subtype = "Relating two explicitely given properties directly"
+        self.regular_subclue_subtypes = {"Concrete": subtype}
+
+    def add_regular_subclue_quantitive_subtype(self):
+        if self.problem.quantitive_characteristics_present():
+            subtype = "Relating two explicitely given properties via a quantitive relation"
+            self.regular_subclue_subtypes.update({"Quantitive": subtype})
+
+    def add_regular_subclue_family_subtype(self):
+        if self.problem.family_present:
+            subtype = "Relating two explicitely given properties via a family relation"
+            self.regular_subclue_subtypes.update({"Family": subtype})
+

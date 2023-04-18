@@ -20,12 +20,9 @@ class Characteristic():
         self.name = name
         self.problem.characteristic_names.append(name)
 
-    def __str__(self):
-        string = (f"Characteristic ID: {self.id}\n"
-                  f"Characteristic type: {self.type}\n"
-                  f"Characteristic name: {self.name}\n"
-                  f"Property names:\n{get_list_string(self.property_names)}")
-        return string
+    def get_data_dict(self):
+        data_dict = self.get_base_data_dict()
+        return data_dict
 
     def get_base_data_dict(self):
         base_data_dict = {"Type": self.type,
@@ -43,7 +40,8 @@ class Characteristic():
         self.display_names = [str(name) for name in self.display_names]
 
     def __str__(self):
-        string = (f"Type: {self.type}\n"
-                  f"Name: {self.name}\n"
-                  f"Property Names:\n{get_list_string(self.property_names)}")
+        string = (f"Characteristic ID: {self.id}\n"
+                  f"Characteristic type: {self.type}\n"
+                  f"Characteristic name: {self.name}\n"
+                  f"Property names:\n{get_list_string(self.property_names)}")
         return string

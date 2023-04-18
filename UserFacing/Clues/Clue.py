@@ -1,3 +1,6 @@
+from UserFacing.Clues.ClueRegular import ClueRegular
+from UserFacing.Clues.ClueFamily import ClueFamily
+from UserFacing.Clues.ClueMurder import ClueMurder
 from Utils.IntInput import get_int_input
 from Utils.Strings import get_list_string
 
@@ -20,6 +23,8 @@ class Clue():
     def get_subclue_from_user(self, subclue_index):
         subclue_class = self.get_subclue_class()
         subclue = subclue_class(self, subclue_index)
+        subclue.clue_input = self.clue_input
+        subclue.set_from_user()
         return subclue
 
     def get_subclue_class(self):
