@@ -31,7 +31,9 @@ class ClueRegular(Subclue):
 
     def get_concrete_properties(self):
         property_1 = self.clue_input.get_property(property_types=["Regular", "Quantitative"])
+        characteristic_name = self.clue_input.characteristic_lookup[property_1].name
         property_2 = self.clue_input.get_property(previous_properties=[property_1],
+                                                  previous_characteristics=[characteristic_name],
                                                   property_types=["Regular", "Quantitative"])
         return property_1, property_2
 
