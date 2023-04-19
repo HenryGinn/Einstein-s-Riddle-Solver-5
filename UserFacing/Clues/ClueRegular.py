@@ -27,7 +27,13 @@ class ClueRegular(Subclue):
         return subtype_input
         
     def concrete_subtype(self):
-        print("Concrete")
+        property_1, property_2 = self.get_concrete_properties()
+
+    def get_concrete_properties(self):
+        property_1 = self.clue_input.get_property(property_types=["Regular", "Quantitative"])
+        property_2 = self.clue_input.get_property(previous_properties=[property_1],
+                                                  property_types=["Regular", "Quantitative"])
+        return property_1, property_2
 
     def quantitive_subtype(self):
         print("Quantitative")

@@ -3,6 +3,7 @@ from UserFacing.Clues.ClueFamily import ClueFamily
 from UserFacing.Clues.ClueMurder import ClueMurder
 from UserFacing.Clues.Clue import Clue
 from Utils.IntInput import get_int_input
+from Utils.Input import get_property
 
 class ClueInput():
 
@@ -11,6 +12,7 @@ class ClueInput():
         self.set_type_options()
         self.set_clue_type_prompt()
         self.set_subclue_subtypes()
+        self.set_characteristic_lookup()
 
     def set_type_options(self):
         self.add_type_regular()
@@ -65,3 +67,13 @@ class ClueInput():
             subtype = "Relating two explicitely given properties via a family relation"
             self.regular_subclue_subtypes.update({"Family": subtype})
 
+    def get_property(self, previous_properties=None, property_types=None):
+        property_name = get_property(self.characteristic_lookup,
+                                     previous_properties,
+                                     property_types)
+        return property_name
+
+    def set_characteristic_lookup(self):
+        self.characteristic_lookup = {str(property_name): characteristic
+                                      for characteristic in self.problem.characteristics
+                                      for property_name in characteristic.property_names}

@@ -28,7 +28,8 @@ class FileSaveProblem():
         self.problem_structure_dict["Characteristics"] = characteristics_list
 
     def set_murder_mystery_data(self):
-        self.problem_structure_dict["Murder Mystery Variation"] = True
+        murder_state = self.problem.murder_variation
+        self.problem_structure_dict["Murder Mystery Variation"] = murder_state
     
     def __str__(self):
         string = json.dumps(self.problem_structure_dict, indent=2)

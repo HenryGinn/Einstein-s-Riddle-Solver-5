@@ -57,3 +57,57 @@ def get_options_prompt(base_prompt, options):
     for index, option in enumerate(options):
         prompt += f"{index + 1}: {option}\n"
     return prompt
+
+def get_property(characteristics, previous_properties, property_types):
+    previous_properties = process_previous_properties(previous_properties)
+    property_types = process_property_types(property_types)
+    property_name = do_get_property(characteristics, previous_properties, property_types)
+    return property_name
+
+def process_previous_properties(previous_properties):
+    if previous_properties is None:
+        previous_properties = []
+    return previous_properties
+
+def process_property_types(property_types):
+    if property_types is None:
+        property_types = ["Regular", "Quantitative", "Family"]
+    return property_types
+
+def do_get_property(characteristic_lookup, previous_properties, property_types):
+    property_valid = False
+    while not property_valid:
+        property_data = attempt_get_property(characteristic_lookup, previous_properties, property_types)
+        property_valid, property_name = property_data
+    return property_name
+
+def attempt_get_property(characteristic_lookup, previous_properties, property_types):
+    prompt = "Please enter the name of a property: "
+    property_name = capitalise(str(input(prompt)))
+    property_valid = get_property_valid(characteristic_lookup, property_name, previous_properties, property_types)
+    return property_valid, property_name
+
+def get_property_valid(characteristic_lookup, property_name, previous_properties, property_types):
+    if property_is_new(property_name, previous_properties):
+        return property_is_legitimate(characteristic_lookup, property_name, property_types)
+    else:
+        return bad_user_input(previous_properties)[1]
+    
+def property_is_new(property_name, previous_properties):
+    property_new = (property_name not in previous_properties)
+    return property_new
+
+def property_is_legitimate(characteristic_lookup, property_name, property_types):
+    if property_name in characteristic_lookup:
+        return property_is_acceptable_type(characteristic_lookup, property_name, property_types)
+    else:
+        print("Sorry, that property does not exist")
+        return False
+
+def property_is_acceptable_type(characteristic_lookup, property_name, property_types):
+    print(characteristic_lookup[property_name].type, property_types)
+    if characteristic_lookup[property_name].type in property_types:
+        return True
+    else:
+        print(f"Sorry, you must enter a property of type: {property_types}")
+        return False
