@@ -56,4 +56,4 @@ def get_options_prompt(base_prompt, options):
     prompt = f"{base_prompt}\n"
     for index, option in enumerate(options):
         prompt += f"{index + 1}: {option}\n"
-    return prompts
+    return prompt

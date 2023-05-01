@@ -1,6 +1,7 @@
 def capitalise(string):
     if type(string) is str:
-        string = get_capitalised(string)
+        if len(string.strip(" ")) > 0:
+            string = get_capitalised(string)
     return string
 
 def get_capitalised(string):

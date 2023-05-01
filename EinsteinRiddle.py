@@ -2,7 +2,7 @@ import os
 import sys
 
 from UserFacing.ProblemStructure.ProblemStructure import ProblemStructure
-from UserFacing.Clues.Clues import Clues
+from Clues.Clues import Clues
 from UserFacing.Display.Display import Display
 
 class EinsteinRiddle():

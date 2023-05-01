@@ -1,6 +1,6 @@
 import os
 
-from UserFacing.Clues.ClueInput import ClueInput
+from Clues.ClueInput import ClueInput
 from Utils.IntInput import get_int_input
 from Utils.Input import get_yes_no_input
 from Utils.Strings import get_list_string
