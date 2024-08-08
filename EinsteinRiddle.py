@@ -4,6 +4,7 @@ import sys
 from UserFacing.ProblemStructure.ProblemStructure import ProblemStructure
 from Clues.Clues import Clues
 from UserFacing.Display.Display import Display
+from UserFacing.table import Table
 
 class EinsteinRiddle():
 
@@ -37,6 +38,7 @@ class EinsteinRiddle():
 
     def initialise_objects(self):
         self.display_obj = Display(self)
+        self.table_obj = Table(self)
 
     def set_problem_structure(self):
         self.problem_structure = ProblemStructure(self)
@@ -60,3 +62,6 @@ class EinsteinRiddle():
 
     def display(self, **kwargs):
         self.display_obj.display(kwargs)
+
+    def table(self):
+        self.table_obj.display(self.solution)
